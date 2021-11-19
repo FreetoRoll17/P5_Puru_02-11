@@ -22,7 +22,6 @@ fetch('http://localhost:3000/api/products')
             document.getElementById('productName_'+ (parseInt(key) + 1)).innerHTML= data[key].name;
             document.getElementById('productDescription_'+ (parseInt(key) + 1)).innerHTML= data[key].description;*/
         }
-        delete document.getElementById('card1') 
     })
 
 
