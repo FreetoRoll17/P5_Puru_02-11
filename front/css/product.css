@@ -3,6 +3,10 @@
 /*********/
 
 /*Item Details*/
+#ref {
+	display: none;
+}
+
 .item {
 	margin: 135px 0;
 	display: flex;
