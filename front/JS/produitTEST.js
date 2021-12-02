@@ -1,12 +1,13 @@
-fetch('http://localhost:3000/api/products')
-    .then(function (response) {
-        return response.json()
-    }).then(function(data){
-        console.log(data)
-        let card = document.getElementById("card");
-            document.getElementById('title').innerHTML = data.name;
-            document.getElementById('price').innerHTML = data.price;
-            document.getElementById('description').innerHTML = data.description;
-            document.querySelector('option').innerHTML = data.colors;
-        
-    })
+const queryString_url_id = window.location.search;
+
+const urlSearchParams = new URLSearchParams (queryString_url_id);
+console.log(urlSearchParams);
+
+
+const leId = urlSearchParams.get("id");
+console.log(leId);
+
+
+//fetch 
+
+let response = await fetch(`http://localhost:3000/api/products/${id}`);

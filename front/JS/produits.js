@@ -45,13 +45,35 @@ fetch('http://localhost:3000/api/products')
         document.getElementById("description").textContent = itemData.description;
         document.getElementById('price').innerText = itemData.price;
         document.getElementById('price').value = itemData.price;
-        // option couleur
+        
         //document.querySelector('option').innerHTML = itemData.colors[""];
         document.getElementById('imageUrl').src = itemData.imageUrl;
-        document.querySelector('option').innerHTML = itemData.colors;
+        document.getElementById('imageUrl').value = itemData.imageUrl;
+        //document.querySelector('option').innerHTML = itemData.colors;
         document.getElementById('ref').value = itemData._id;
         document.getElementById('title').value = itemData.name;
 
+
+
+        let select = document.getElementById("colors");
+      console.log(select);
+
+
+      console.log(itemData.colors);
+       /* 
+        for (let color of itemData) {
+
+          let select = document.getElementById("colors");
+          let opt = document.createElement("option");
+          option.value = (document.querySelector('option').innerHTML = itemData.colors);
+          option.text = "option.value"; // Ca peut très bien être tout simplement taValue aussi
+
+          select.add(option);
+        }
+*/
+        
+          
+        
         /*for (const couleur of data) {
 
             
@@ -68,6 +90,7 @@ fetch('http://localhost:3000/api/products')
   
         }*/
       }
+
      //TEST LOCAL STORAGE
 
         /*localStorage.setItem("quantity","Suantity.value");
@@ -76,7 +99,7 @@ fetch('http://localhost:3000/api/products')
         console.log(maQuantite);*/
 
         const ajouterPanier = document.getElementById("addToCart");
-        console.log(ajouterPanier)
+        //console.log(ajouterPanier)
         
        //bouttonAjouterPanier.addEventListener("click", () => {
       
@@ -87,6 +110,7 @@ fetch('http://localhost:3000/api/products')
           localStorage.setItem("id produit",document.getElementById('ref').value);
           localStorage.setItem("prix",document.getElementById('price').value);
           localStorage.setItem("nom",document.getElementById('title').value);
+          localStorage.setItem("image",document.getElementById('imageUrl').value);
 
          
         
