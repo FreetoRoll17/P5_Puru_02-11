@@ -14,6 +14,7 @@ fetch('http://localhost:3000/api/products')
                 let a = document.createElement('a')
                 a.classList.add('card')
                 a.href = './product.html?id='+kanap._id;
+                //a.href = './htmlTEST.html?id='+kanap._id;
 
                 a.innerHTML = `
                 <article>

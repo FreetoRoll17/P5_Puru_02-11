@@ -49,17 +49,27 @@ fetch('http://localhost:3000/api/products')
         //document.querySelector('option').innerHTML = itemData.colors[""];
         document.getElementById('imageUrl').src = itemData.imageUrl;
         document.getElementById('imageUrl').value = itemData.imageUrl;
-        //document.querySelector('option').innerHTML = itemData.colors;
+        document.getElementById('optionColor').innerHTML = itemData.colors[1];
         document.getElementById('ref').value = itemData._id;
         document.getElementById('title').value = itemData.name;
 
 
 
-        let select = document.getElementById("colors");
-      console.log(select);
+        //let select = document.getElementById("colors");
+        //console.log(select);
 
 
-      console.log(itemData.colors);
+        //console.log(itemData.colors);
+        /*  let newOption= optionColor.cloneNode(true);
+            newOption.id = "optionColor"+(parseInt(key) + 1);
+            newOption.getElementById('optionColor').innerHTML = data[key].name;
+            
+            optionColor.parentNode.insertBefore(newOption, optionColor.nextSibling); 
+            section.appendChild(newOption)
+        */  
+
+
+
        /* 
         for (let color of itemData) {
 
@@ -93,36 +103,67 @@ fetch('http://localhost:3000/api/products')
 
      //TEST LOCAL STORAGE
 
-        /*localStorage.setItem("quantity","Suantity.value");
-
-        let maQuantite = localStorage.getItem("quantity");
-        console.log(maQuantite);*/
-
         const ajouterPanier = document.getElementById("addToCart");
         //console.log(ajouterPanier)
         
-       //bouttonAjouterPanier.addEventListener("click", () => {
       
         ajouterPanier.addEventListener("click", (event) => {
           event.preventDefault;
+
+          
+
+          var produitChoisi = {
+            modele:  title,
+            image: imageUrl,
+            prix: price, //= price,
+            couleur: colors,
+            //quantite: localStorage.setItem("quantite",document.getElementById('quantity').value),
+            id: ref,
+          }
+
+          var produitChoisi = JSON.stringify(produitChoisi)
+
+          var produitAjoute = "produitAjouté_";
+          var produitAjouteId = localStorage.length+1;
+          localStorage[produitAjoute + produitAjouteId] = produitChoisi;
+          
+          return false;
+          
+          
+
+          
+
+          
+
+          /*document.getElementById('bt_submit').addEventListener('touchstart', function(){
+ 
+          var pretDATA = {
+              nom:document.getElementById('input_nom').value,
+              objet:document.getElementById('input_objet').value,
+              date:new Date()
+          };
+          var pretDATA = JSON.stringify(pretDATA);
+          
+          var pret = "pret";
+          var pretID = localStorage.length+1;
+          localStorage[pret + pretID] = pretDATA;
+          
+          return false;
+          });
+          */ 
+
+        /*
           localStorage.setItem("quantite",document.getElementById('quantity').value);
           localStorage.setItem("couleur",document.getElementById('colors').value);
           localStorage.setItem("id produit",document.getElementById('ref').value);
           localStorage.setItem("prix",document.getElementById('price').value);
           localStorage.setItem("nom",document.getElementById('title').value);
           localStorage.setItem("image",document.getElementById('imageUrl').value);
-
+          */
          
         
           
-          /*let produitChoisi = {
-            modele:  itemData.name,
-            image: itemData.imageUrl,
-            prix: itemData.prix,
-            couleur: itemData.colors,
-            quantite: itemData.quantity,
-            id: itemData._id,
-          }*/
+          
         
           
           })
