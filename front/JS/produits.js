@@ -1,24 +1,107 @@
-/*let params = new URL(document.location).searchParams;
-let id = params.get('id');
-console.log(id)
+var loc = window.location.href;
+var url = new URL(loc);
+var idProduit = url.searchParams.get("id");
+let kanap = "";
+
+getArticle();
+
+function getArticle() {
+  fetch("http://localhost:3000/api/products/" + idProduit)
+    .then((res) => {
+      return res.json();
+    })
+
+    .then(async function (retourAPI) {
+      kanap = await retourAPI;
+      if (kanap) {
+        produitSelectionne(kanap);
+      }
+    })
+}
+
+// API vers page produit
+
+function produitSelectionne(kanap) {
+  let imageProduit = document.createElement("img");
+  document.getElementById("item__img").appendChild(imageProduit);
+  imageProduit.src = kanap.imageUrl;
+  imageProduit.alt = kanap.altTxt;
+
+
+  document.getElementById('title').innerHTML = kanap.name;
+  document.getElementById('price').innerHTML = kanap.price;
+  document.getElementById('description').innerHTML = kanap.description;
+
+  for (let colors of kanap.colors) {
+    let couleurProduit = document.createElement("option");
+    document.getElementById("colors").appendChild(couleurProduit);
+    couleurProduit.value = colors;
+    couleurProduit.innerHTML = colors;
+  }
+  addToCart(kanap);
+}
+
+//Gestion du panier
+function addToCart(kanap) {
+  const ajouterPanier = document.getElementById("addToCart");
+  ajouterPanier.addEventListener("click", (event) => {
+    //if (document.getElementById("quantity").value > 0 && document.getElementById("quantity").value <=100 && document.getElementById("quantity").value != 0){
+    let choixCouleur = document.getElementById("colors").value;
+    if (choixCouleur === "Choisissez la couleur") {
+      document.getElementById("color-error").style.display = "block";
+      return;
+    }
+    let choixQuantite = document.getElementById("quantity").value;
+    if (choixQuantite == 0) {
+      document.getElementById("quantity-error").style.display = "block";
+      return;
+    }
+    //valeur à transférer dans l'array
+    let optionsProduit = {
+      idProduit: idProduit,
+      couleurProduit: choixCouleur,
+      quantiteProduit: Number(choixQuantite),
+      nomProduit: kanap.name,
+      prixProduit: kanap.price,
+      descriptionProduit: kanap.description,
+      imgProduit: kanap.imageUrl,
+      altImgProduit: kanap.altTxt
+    };
+
+    //convertir en JSON
+    let produitLocalStorage = JSON.parse(localStorage.getItem("produit"));
+
+
+    //Importation dans le local storage
+    //Si déjà 1 article minimum
+    if (produitLocalStorage) {
+      const produitPanier = produitLocalStorage.find(
+        (element) => element.idProduit === idProduit && element.couleurProduit === choixCouleur);
+      //déjà dans le panier
+      if (produitPanier) {
+        let newQuantite =
+          parseInt(optionsProduit.quantiteProduit) + parseInt(produitPanier.quantiteProduit);
+        produitPanier.quantiteProduit = newQuantite;
+        localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
+        //pas encore dans le panier
+      } else {
+        produitLocalStorage.push(optionsProduit);
+        localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
+      }
+      //Si le panier est vide
+    } else {
+      produitLocalStorage = [];
+      produitLocalStorage.push(optionsProduit);
+      localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
+    }
+  })
+};
 
 
 
-fetch('http://localhost:3000/api/products')
-    .then(function (response) {
-        return response.json()
-    }).then(function(data){
-        console.log(data)
-        let card = document.getElementById("card");
-            document.getElementById('title').innerHTML = data.name;
-            document.getElementById('price').innerHTML = data.price;
-            document.getElementById('description').innerHTML = data.description;
-            document.querySelector('option').innerHTML = data.colors;
-        
-    })*/
+/*
 
-
-
+     Deuxième esssai 
     (async function () {
         const itemId = getItemId()
         const itemData = await getItemData(itemId)
@@ -52,56 +135,22 @@ fetch('http://localhost:3000/api/products')
         document.getElementById('optionColor').innerHTML = itemData.colors[1];
         document.getElementById('ref').value = itemData._id;
         document.getElementById('title').value = itemData.name;
-
-
-
-        //let select = document.getElementById("colors");
-        //console.log(select);
-
-
-        //console.log(itemData.colors);
-        /*  let newOption= optionColor.cloneNode(true);
-            newOption.id = "optionColor"+(parseInt(key) + 1);
-            newOption.getElementById('optionColor').innerHTML = data[key].name;
-            
-            optionColor.parentNode.insertBefore(newOption, optionColor.nextSibling); 
-            section.appendChild(newOption)
-        */  
-
-
-
-       /* 
-        for (let color of itemData) {
-
-          let select = document.getElementById("colors");
-          let opt = document.createElement("option");
-          option.value = (document.querySelector('option').innerHTML = itemData.colors);
-          option.text = "option.value"; // Ca peut très bien être tout simplement taValue aussi
-
-          select.add(option);
-        }
-*/
-        
-          
-        
-        /*for (const couleur of data) {
-
-            
-          let option = document.createElement('option')
-          option.classList.add('card')
-          
-
-          option.innerHTML =`
-          <option>${itemData.colors}</option>
-          `
-          
-
-        section.appendChild(a)
-  
-        }*/
       }
 
      //TEST LOCAL STORAGE
+     
+     //Troisième essai, pour avoir un seul array dans LocalStorage
+
+
+
+
+
+
+
+  
+
+
+
 
         const ajouterPanier = document.getElementById("addToCart");
         //console.log(ajouterPanier)
@@ -117,7 +166,7 @@ fetch('http://localhost:3000/api/products')
             image: imageUrl,
             prix: price, //= price,
             couleur: colors,
-            //quantite: localStorage.setItem("quantite",document.getElementById('quantity').value),
+            quantite: Number(quantity),//localStorage.setItem("quantite",document.getElementById('quantity').value),
             id: ref,
           }
 
@@ -128,48 +177,20 @@ fetch('http://localhost:3000/api/products')
           localStorage[produitAjoute + produitAjouteId] = produitChoisi;
           
           return false;
+           
+        })
           
-          
-
-          
-
-          
-
-          /*document.getElementById('bt_submit').addEventListener('touchstart', function(){
- 
-          var pretDATA = {
-              nom:document.getElementById('input_nom').value,
-              objet:document.getElementById('input_objet').value,
-              date:new Date()
-          };
-          var pretDATA = JSON.stringify(pretDATA);
-          
-          var pret = "pret";
-          var pretID = localStorage.length+1;
-          localStorage[pret + pretID] = pretDATA;
-          
-          return false;
-          });
-          */ 
-
-        /*
-          localStorage.setItem("quantite",document.getElementById('quantity').value);
-          localStorage.setItem("couleur",document.getElementById('colors').value);
-          localStorage.setItem("id produit",document.getElementById('ref').value);
-          localStorage.setItem("prix",document.getElementById('price').value);
-          localStorage.setItem("nom",document.getElementById('title').value);
-          localStorage.setItem("image",document.getElementById('imageUrl').value);
-          */
-         
-        
-          
-          
-        
-          
-          })
-      
+         */
 
 
-        
-  
-      
+/* 
+
+Premier essai 
+
+  localStorage.setItem("quantite",document.getElementById('quantity').value);
+  localStorage.setItem("couleur",document.getElementById('colors').value);
+  localStorage.setItem("id produit",document.getElementById('ref').value);
+  localStorage.setItem("prix",document.getElementById('price').value);
+  localStorage.setItem("nom",document.getElementById('title').value);
+  localStorage.setItem("image",document.getElementById('imageUrl').value);
+*/
