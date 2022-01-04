@@ -50,6 +50,8 @@ function addToCart(kanap) {
     if (choixCouleur === "Choisissez la couleur") {
       document.getElementById("color-error").style.display = "block";
       return;
+    }else {
+      document.getElementById("color-error").style.display = "none";
     }
     let choixQuantite = document.getElementById("quantity").value;
     if (choixQuantite == 0) {

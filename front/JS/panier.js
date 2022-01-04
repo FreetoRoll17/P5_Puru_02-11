@@ -164,108 +164,124 @@ const btn_commander = document.getElementById("order");
 btn_commander.addEventListener("click", (event) => {
     event.preventDefault();
 
-    const clientInform = {
 
-        Prenom: document.getElementById("firstName").value,
-        Nom: document.getElementById("lastName").value,
-        Adresse: document.getElementById("address").value,
-        Ville: document.getElementById("city").value,
-        Email: document.getElementById("email").value
+    const contact = {
+
+        firstName: document.getElementById("firstName").value,
+        lastName: document.getElementById("lastName").value,
+        address: document.getElementById("address").value,
+        city: document.getElementById("city").value,
+        email: document.getElementById("email").value
     }
+
+    let idProducts = [];
+    for (let i = 0; i < produitEnregistre.length; i++) {
+        idProducts.push(produitEnregistre[i].idProduit);
+    }
+
+
 
     //validation prénom
     function checkPrenom() {
-        const prenom = clientInform.Prenom;
+        const prenom = contact.firstName;
         if (/^[A-Za-z]{3,25}$/.test(prenom)) {
+            document.getElementById('firstNameErrorMsg').textContent = ""
             console.log("ok");
             return true;
         } else {
+            document.getElementById('firstNameErrorMsg').textContent = "Veuillez vérifier le prénom"
             console.log("error");
-            alert("Veuillez contrôler les informations saisies")
+            //alert("Veuillez vérifier le prénom saisi")
             return false
         }
     }
 
     //validation nom
     function checkNom() {
-        const nom = clientInform.Nom;
+        const nom = contact.lastName;
         if (/^[A-Za-z]{3,25}$/.test(nom)) {
+            document.getElementById('lastNameErrorMsg').textContent = ""
             console.log("ok");
             return true;
         } else {
+            document.getElementById('lastNameErrorMsg').textContent = "Veuillez vérifier le nom saisi"
             console.log("error");
-            alert("Veuillez contrôler les informations saisies")
             return false
         }
     }
 
+    //validation adresse
+    /*function checkAdress() {
+        const adresse = contact.Adresse;
+        if (/^[a-zA-Z0-9\s,'-]$/.test(adresse)) {
+            console.log("ok");
+            return true;
+        } else {
+            console.log("error");
+            alert("Veuillez vérifier l'adresse saisie")
+            return false
+        }
+    }
+    */
 
     //validation ville
     function checkVille() {
-        const ville = clientInform.Ville;
+        const ville = contact.city;
         if (/^[A-Za-z]{3,25}$/.test(ville)) {
+            document.getElementById('cityErrorMsg').textContent = ""
             console.log("ok");
             return true;
         } else {
             console.log("error");
-            alert("Veuillez contrôler les informations saisies")
+            document.getElementById('cityErrorMsg').textContent = "Veuillez vérifier la ville saisie"
             return false
         }
     }
 
-    if (checkPrenom() && checkNom() && checkVille())  {
-        localStorage.setItem("clientInform", JSON.stringify(clientInform));
-    } else {}
-    //LS 
-
-
-    const envoiLs = {
-        produitEnregistre,
-        clientInform
+    //validation email
+    function checkEmail() {
+        const email = contact.email;
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+            document.getElementById('emailErrorMsg').textContent = ""
+            console.log("ok");
+            return true;
+        } else {
+            console.log("error");
+            document.getElementById('emailErrorMsg').textContent = "Veuillez vérifier l'adresse e-mail saisie"
+            return false
+        }
     }
+
+    if (checkPrenom() && checkNom() /*&& checkAdress()*/ && checkVille() && checkEmail()) {
+
+        localStorage.setItem("contact", JSON.stringify(contact));
+
+
+        fetch('http://localhost:3000/api/products/order', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contact,
+                    products: idProducts
+                })
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+
+                localStorage.setItem("orderId", data.orderId);
+            })
+
+        document.location.href = "confirmation.html";
+    } else {}
+    
 })
 
-/*
-        localStorage.setItem("prenom", document.getElementById("firstName").value);
-        localStorage.setItem("nom", document.getElementById("lastName").value);
-        localStorage.setItem("adresse", document.getElementById("address").value);
-        localStorage.setItem("ville", document.getElementById("city").value);
-        localStorage.setItem("email", document.getElementById("email").value);
-        
-        
-        const infoClient = {
-                
-                    Prenom: localStorage.getItem("prenom"),
-                    Nom: localStorage.getItem("nom"),
-                    Adresse: localStorage.getItem("adresse"),
-                    Ville: localStorage.getItem("ville"),
-                    Email: localStorage.getItem("email")
-                }
 
-                console.log(infoClient);
-
-    }
-    )
-
-    //envoyer vers LS
-    const aEnvoyer = {
-        produitEnregistre,
-        infoClient
-    }
-
-    */
-
-
-
-/*
-let idProducts = [];
-for (let i = 0; i<produitEnregistre.length;i++) {
-    idProducts.push(produitEnregistre[i].idProduit);
-}
-console.log(idProducts);
-*/
-
-//valeur à transférer dans l'array
+ 
 
 
 
@@ -275,20 +291,9 @@ console.log(idProducts);
 
 
 
-//calcul panier : 
 
 
 
-/*
-document.getElementById("nom").innerHTML = nomProduit;
-document.getElementById("prix").innerHTML = prixProduit+"€";
-document.getElementById("couleur").innerHTML = couleurProduit;
-document.getElementById("imageProduit").src = imageProduit;
-document.getElementById("itemQuantity").value = quantiteProduit;
-*/
 
-/*
-window.onload = function () {
-document.getElementById("title").innerHTML = storageTitle;
-}
-*/
+
+
